@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUI Foods - Order Online</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <img src="https://cdn-desktop-ap-media.osp.opera.software/images/522a4138-f6f8-11ef-b682-6d6eb2b2acac/1740873533602/sample_0.jpg" alt="MUI Foods Logo" class="logo">
+            <h1>MUI Foods</h1>
+            <p class="special-offer">"Ramadan Mubarak Special!" - Buy 2 Dozen & Get 2 Extra Frozen Items For Free</p>
+        </header>
+
+        <div class="menu">
+            <h2>🌙 Rolls</h2>
+            <div class="menu-item" data-price="20">
+                <span>12 Chicken Rolls - $20</span>
+                <button class="minus">-</button>
+                <input type="number" value="0" readonly>
+                <button class="plus">+</button>
+            </div>
+            <div class="menu-item" data-price="18">
+                <span>12 Vegetable Rolls - $18</span>
+                <button class="minus">-</button>
+                <input type="number" value="0" readonly>
+                <button class="plus">+</button>
+            </div>
+
+            <h2>🌙 Samosa</h2>
+            <div class="menu-item" data-price="20">
+                <span>12 Chicken Mince Samosa - $20</span>
+                <button class="minus">-</button>
+                <input type="number" value="0" readonly>
+                <button class="plus">+</button>
+            </div>
+            <div class="menu-item" data-price="18">
+                <span>12 Beef Mince Samosa - $18</span>
+                <button class="minus">-</button>
+                <input type="number" value="0" readonly>
+                <button class="plus">+</button>
+            </div>
+            <div class="menu-item" data-price="24">
+                <span>12 Potato Samosa (Large) - $24</span>
+                <button class="minus">-</button>
+                <input type="number" value="0" readonly>
+                <button class="plus">+</button>
+            </div>
+
+            <h2>🌙 Kebabs</h2>
+            <div class="menu-item" data-price="22">
+                <span>12 Chicken Shami Kebab - $22</span>
+                <button class="minus">-</button>
+                <input type="number" value="0" readonly>
+                <button class="plus">+</button>
+            </div>
+            <div class="menu-item" data-price="22">
+                <span>12 Beef Shami Kebab - $22</span>
+                <button class="minus">-</button>
+                <input type="number" value="0" readonly>
+                <button class="plus">+</button>
+            </div>
+            <div class="menu-item" data-price="26">
+                <span>12 Chicken Chapli Kebab - $26</span>
+                <button class="minus">-</button>
+                <input type="number" value="0" readonly>
+                <button class="plus">+</button>
+            </div>
+            <div class="menu-item" data-price="26">
+                <span>12 Beef Chapli Kebab - $26</span>
+                <button class="minus">-</button>
+                <input type="number" value="0" readonly>
+                <button class="plus">+</button>
+            </div>
+        </div>
+
+        <h2>Total Price: $<span id="total-price">0.00</span></h2>
+
+        <!-- Order Form -->
+        <form id="order-form" action="https://formsubmit.co/muifoods1@gmail.com" method="POST">
+            <input type="hidden" name="_captcha" value="false"> <!-- Prevent spam -->
+            <input type="hidden" name="_autoresponse" value="Thank you for your order! We will process it shortly."> <!-- Confirmation email -->
+
+            <h2>Customer Details</h2>
+
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name" placeholder="Your Name" required>
+
+            <label for="phone">Phone:</label>
+            <input type="tel" name="phone" id="phone" placeholder="Your Phone Number" required>
+
+            <label for="pickup-date">Pickup Date:</label>
+            <input type="date" name="pickup-date" id="pickup-date" required>
+
+            <!-- Hidden input for order details -->
+            <input type="hidden" name="order-details" id="order-details-input">
+
+            <button type="submit" id="place-order">Place Order</button>
+        </form>
+
+        <div id="thank-you-message" style="display: none;">
+            <h2>Thank you! Your order has been placed.</h2>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll(".menu-item").forEach(item => {
+            let minusBtn = item.querySelector(".minus");
+            let plusBtn = item.querySelector(".plus");
+            let quantityInput = item.querySelector("input");
+            let price = parseFloat(item.getAttribute("data-price"));
+
+            minusBtn.addEventListener("click", function() {
+                if (quantityInput.value > 0) {
+                    quantityInput.value--;
+                    updateTotal();
+                }
+            });
+
+            plusBtn.addEventListener("click", function() {
+                quantityInput.value++;
+                updateTotal();
+            });
+        });
+
+        function updateTotal() {
+            let total = 0;
+            let orderDetails = [];
+
+            document.querySelectorAll(".menu-item").forEach(item => {
+                let quantity = parseInt(item.querySelector("input").value);
+                let price = parseFloat(item.getAttribute("data-price"));
+                if (quantity > 0) {
+                    total += quantity * price;
+                    orderDetails.push(`${item.querySelector("span").textContent} x${quantity}`);
+                }
+            });
+
+            document.getElementById("total-price").innerText = total.toFixed(2);
+            document.getElementById("order-details-input").value = `Order Details:\n${orderDetails.join("\n")}\n\nTotal Price: $${total.toFixed(2)}`;
+        }
+
+        document.getElementById("order-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent form submission to server
+
+            // Hide the order form
+            document.getElementById("order-form").style.display = "none";
+
+            // Show the thank you message
+            document.getElementById("thank-you-message").style.display = "block";
+
+            // Manually submit the form
+            this.submit();
+        });
+    </script>
+
+</body>
+</html>
